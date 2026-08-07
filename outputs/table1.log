@@ -1,0 +1,8 @@
+
+=== Table 1: per-(method,dataset,metric) means over seeds ===
+method        dataset             metric          mean       std
+ciro          scm_chain           acs           0.0391    0.0000
+ciro          scm_confounded      acs           0.0383    0.0000
+ciro          scm_independent     acs           0.0321    0.0000
+
+[table1] wrote outputs\table1\results_by_dataset_summary.csv and outputs\table1\results_table1_avg.csv

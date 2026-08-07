@@ -1,0 +1,33 @@
+# Distracting Control Suite: walker-walk (DTG dataset #2 of 2).
+dcs: true
+domain: walker
+task: walk
+dcs_resolution: 64
+dcs_frame_stack: 1
+dcs_n_frames: 24
+dcs_pool_action_seed: 0
+dcs_train_pool: train
+dcs_eval_pool: eval
+dcs_steps: 2000
+batch_size: 128
+
+method: curl
+temperature: 0.1
+hsic_mode: rff
+rff_dim: 128
+hsic_lambda: 0.05
+placement: encoder
+proj_enabled: false
+proj_hidden: 64
+proj_out: 64
+
+lr: 3.0e-4
+weight_decay: 1.0e-6
+momentum: 0.05
+mixed_precision: true
+device: auto
+resume: true
+log_every: 50
+save_every: 200
+
+output_dir: ./outputs

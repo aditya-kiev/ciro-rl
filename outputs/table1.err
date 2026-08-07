@@ -1,0 +1,3 @@
+C:\Users\adity\Downloads\ciro-rl\ciro_rl\utils\hsic.py:50: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:823.)
+  return float(vals.median().clamp(min=1e-6))

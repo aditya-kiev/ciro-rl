@@ -1,0 +1,14 @@
+# ---
+# TODO: License placeholder.
+#
+# I have NOT chosen a license yet. Please do NOT decide for me.
+#
+# Suggested starting points (you pick; this is a decision for you, not the code):
+#   - MIT / BSD-3-Clause  : permissive, research-friendly, simple.
+#   - Apache-2.0          : permissive with an explicit patent grant.
+#   - CC-BY-SA-4.0        : share-alike (often chosen for open-science artifacts).
+#
+# Until you pick, treat this repository as "all rights reserved" (no license = no
+# use rights for third parties). Replace this file with your chosen license text
+# and paste the corresponding LICENSE header into `pyproject.toml`'s `license` field
+# before publishing.

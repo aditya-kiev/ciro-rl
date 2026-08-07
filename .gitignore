@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Env
+.venv/
+venv/
+env/
+
+# PyTorch
+*.pt
+*.pth
+checkpoints/
+runs/
+logs/
+
+# Results (keep the CSVs out of git until they are real run outputs you choose to
+# commit; the README asks you to paste them in as text tables anyway).
+results_*.csv
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Notebooks that are work-in-progress
+*.ipynb_checkpoints/

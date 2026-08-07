@@ -1,0 +1,43 @@
+# SCM-MDP benchmark (A) Independent.
+# CIRO paper Appendix B.1(A). Causal parents S = [0,1,2,3]; nuisance = [4,5,6,7].
+dataset: scm_mdp
+kind: independent
+scm_kind: independent
+# -- data --
+n_episodes: 24
+episode_len: 120
+window: 4
+img_size: 32
+latent_dim: 8
+causal_parents: [0, 1, 2, 3]
+nuisance_indices: [4, 5, 6, 7]
+confounded_pair: [0, 1]     # only meaningful for the confounded benchmark (C)
+beta: 0.5
+latent_seed: 7
+# -- method (overridden per-cell by run_table1) -------------------------
+method: curl            # curl | marginal_hsic | ciro
+temperature: 0.1
+hsic_mode: rff
+rff_dim: 128
+hsic_lambda: 0.05
+placement: encoder       # encoder | projection (CIRO placement, Table 2)
+proj_enabled: false
+proj_hidden: 64
+proj_out: 64
+# -- training ------------------------------------------------------------
+epochs: 40
+steps_per_epoch: 200
+batch_size: 256
+lr: 1.0e-3
+weight_decay: 1.0e-6
+momentum: 0.05
+mixed_precision: true
+device: auto
+resume: true
+log_every: 25
+save_every: 100
+# -- diagnostics ---------------------------------------------------------
+acs_n_samples: 512
+acs_delta: 1.0
+acs_h: 0
+output_dir: ./outputs

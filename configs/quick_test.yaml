@@ -1,0 +1,24 @@
+# Tiny smoke-test config used by experiments/quick_test.py and by the
+# `--quick-test` flag on run_table1 / run_table2_ablations.
+# A few steps per config, one seed (0), purely to verify the pipeline doesn't
+# crash before a real 3-seed run is committed.
+# Applied as overrides on top of the normal per-dataset config values.
+tag: quick_test
+
+epochs: 2
+steps_per_epoch: 12
+dcs_steps: 20
+n_episodes: 6
+episode_len: 40
+window: 2
+batch_size: 64
+acs_n_samples: 128
+acs_h: 0
+log_every: 5
+save_every: 10
+seed_list: [0]
+
+method: ciro
+hsic_mode: rff
+rff_dim: 64
+output_dir: ./outputs/quick_test

@@ -1,0 +1,38 @@
+# Distracting Control Suite: cartpole-balance (DTG dataset #1 of 2).
+# Requires dm_control + distracting_control + MuJoCo/EGL (see README). If the
+# stack is missing, experiments/run_table1.py skips this dataset gracefully.
+dcs: true
+domain: cartpole
+task: balance
+dcs_resolution: 64          # deliberately below DCS defaults (100x100) for T4
+dcs_frame_stack: 1
+dcs_n_frames: 24           # frames sampled per distractor pool for DTG
+dcs_pool_action_seed: 0
+dcs_train_pool: train
+dcs_eval_pool: eval
+dcs_steps: 2000            # gradient updates (T4-tractable default)
+batch_size: 128            # DCS uses a smaller batch (paper App. C.2)
+
+method: curl
+temperature: 0.1
+hsic_mode: rff
+rff_dim: 128
+hsic_lambda: 0.05
+placement: encoder
+proj_enabled: false
+proj_hidden: 64
+proj_out: 64
+
+lr: 3.0e-4               # 3e-4 for DCS (paper App. C.2)
+weight_decay: 1.0e-6
+momentum: 0.05
+mixed_precision: true
+device: auto
+resume: true
+log_every: 50
+save_every: 200
+
+acs_n_samples: 512
+acs_delta: 1.0
+acs_h: 0
+output_dir: ./outputs

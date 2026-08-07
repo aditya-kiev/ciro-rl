@@ -1,6 +1,6 @@
 ﻿"""run_table1.py : 3-seed runner across methods x datasets.
 
-For every (method in {curl, marginal_hsis, ciro}) x (dataset in {scm_independent,
+For every (method in {curl, marginal_hsic, ciro}) x (dataset in {scm_independent,
 scm_chain, scm_confounded, dcs_cartpole_balance, dcs_walker_walk}) x
 (seed in {0,1,2}): train the encoder, evaluate ACS (SCM datasets) or DTG
 (DCS datasets), and write:

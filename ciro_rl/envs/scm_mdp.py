@@ -157,8 +157,8 @@ class _SCMMDP:
                 u = self._persist * u + self._w_innov * w[:, t]
                 z_next = self._persist * z + self._innov * noise.eps[:, t]
                 z_next[:, self.causal_parents] += self.beta * actions[:, t]
-                z_next[:, j] = u + self._innov * w[:, t]
-                z_next[:, k] = u + self._innov * w[:, t]
+                z_next[:, j] = u + self._innov * noise.eps[:, t, j]
+                z_next[:, k] = u + self._innov * noise.eps[:, t, k]
                 z = z_next
         else:
             for t in range(T):

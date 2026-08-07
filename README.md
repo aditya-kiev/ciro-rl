@@ -1,16 +1,20 @@
 # ciro-rl
 
-CIRO (**C**onditional **I**ndependence **R**egularization for contrastive
-state-representation learning in **o**ffline RL) plus the associated
-**ACS** and **DTG** diagnostics. Companion implementation of the paper
-"Conditional Independence Regularization for Representation Learning" (CIR).
+CIRO (**C**ausal **I**ndependence **R**egularization for robust state 
+representations in **o**ffline RL) plus the associated **ACS** and **DTG**
+diagnostics. This is the companion implementation of the paper "Causal
+Independence Regularization for Robust State Representations in Offline
+Reinforcement Learning" (CIRO). It builds on CIR ("Contrastive Causal
+Representation Learning via Conditional Independence Regularization"),
+extending its residual-then-HSIC regularization from a static contrastive
+setting to CURL-style state representations for offline RL.
 
 The repository is a self-contained, research-grade implementation. It
 implements the theory, the method training loop, and the two evaluation
-diagnostics (causal ACS on SCM-MDP and action-saliency DTG on DCS), with unit
-tests and a one-shot smoke test.
+diagnostics (causal ACS on SCM-MDP and action-saliency DTG on DCS), with
+unit tests and a one-shot smoke test.
 
-> **Status note:** this builds and all 24 unit tests pass, and
+> **Status note:** this builds and all 25 unit tests pass, and
 > `experiments/quick_test.py` runs the *entire* pipeline end-to-end (SCM fully,
 > DCS exercising its skip path) on CPU. The DCS rows require MuJoCo +
 > Distracting Control, which are optional (see the license note below).
@@ -28,26 +32,15 @@ representation becomes more redundant-free and more causally interpretable.
 
 Two diagnostics are provided:
 
-- **ACS (Average Causal Sensitivity)** on synthetic **SCM-MDP** benchmarks — how
-  sensitive each learned representation dimension is to interventions on the
-  underlying causal latent.
-- **DTG (Distant-To-Goal)** on **Distracting Control Suite (DCS)** — the
-  distance in representation space (from the goal) as a function of how many
-  distractor-perturbed frames have been consumed.
+- **ACS (Axis-Wise Causal Sensitivity)** on synthetic **SCM-MDP** benchmarks:
+  how concentrated each causal latent's influence is on a single learned
+  representation coordinate, by propagating a one-time intervention
+  through the transition dynamics and measuring the change (Section 6.1).
+- **DTG (Distractor Transfer Gap)** on **Distracting Control Suite (DCS)**:
+  the percentage drop in a training-pool linear-probe score when applied
+  to evaluation-distractor-pool frames, quantifying robustness to
+  distractor shift (Section 6.2).
 
-### Ordered ranking of datasets (ground truth)
-
-| dataset | expected ranking (best → worst) |
-|---|---|
-| `scm_chain` | `ciro` > `marginal_hsic` > `curl` |
-| `scm_confounded` | `ciro` > `curl` > `marginal_hsic` |
-| `scm_independent` | `ciro` (weakest gain, others close) |
-
-`scm_confounded` is the stress case: it is exactly where `marginal_hsic`
-collapses, because per-coordinate marginal independence is too weak to detect
-*conditional* dependence (this is the point of the paper). `scm_chain` and
-`scm_independent` are where `ciro` is expected to be at least as good as the
-others.
 
 ---
 

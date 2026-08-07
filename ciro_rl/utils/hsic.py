@@ -47,7 +47,7 @@ def median_heuristic(x: torch.Tensor) -> float:
     """
     d = torch.cdist(x.reshape(-1, 1), x.reshape(-1, 1))
     vals = d[upper_triu_mask(d)]
-    return float(vals.median().clamp(min=1e-6))
+    return float(vals.detach().median().clamp(min=1e-6))
 
 
 def centering_matrix(n: int, device: torch.device) -> torch.Tensor:

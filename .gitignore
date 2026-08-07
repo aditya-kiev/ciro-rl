@@ -22,6 +22,8 @@ logs/
 # Results (keep the CSVs out of git until they are real run outputs you choose to
 # commit; the README asks you to paste them in as text tables anyway).
 results_*.csv
+outputs/*.log
+outputs/*.err
 
 # IDE / OS
 .idea/

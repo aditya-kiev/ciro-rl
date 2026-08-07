@@ -10,7 +10,7 @@ No projection head is added by default (App. C.1), matching CURL's own design;
 the *_proj heads exist only for the placement ablation in Experiments/Table 2.
 """
 
-from typing import Optional
+from typing import Dict, Optional
 
 import torch
 import torch.nn as nn

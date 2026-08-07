@@ -71,6 +71,27 @@ def test_rollout_preserves_shape():
     assert torch.isfinite(zT).all()
 
 
+def test_rollout_confounded_pair_not_identical():
+    """Rolled-out confounded latents (j, k) must stay distinct, not equal.
+
+    The confounded pair shares a persistent confounder u_t but each also has its
+    own independent idiosyncratic noise. This guards against a regression where
+    rollout() reused the confounder's noise for both, forcing z[:,j] == z[:,k]
+    exactly at every step past t=0.
+    """
+    scm = get_scm_mdp("confounded", latent_dim=8, seed=7, confounded_pair=(0, 1))
+    j, k = scm.confounded_pair
+    z0 = scm.sample_prior(16)
+    act = torch.rand(16, 6, 1) * 2 - 1
+    noise = scm.new_noise(16, 6)
+    zT = scm.rollout(z0, act, noise)
+    # over a batch after >=1 step, the pair must register distinct values
+    assert not torch.allclose(zT[:, j], zT[:, k])
+    # while strongly correlated via the shared confounder
+    c = torch.corrcoef(torch.stack([zT[:, j], zT[:, k]]))
+    assert c[0, 1].abs().item() > 0.1
+
+
 def test_rollout_shared_noise_is_deterministic_given_noise():
     """Original vs do-intervened rollouts must share the same noise stream."""
     scm = get_scm_mdp("confounded", latent_dim=8, seed=7, confounded_pair=(0, 1))

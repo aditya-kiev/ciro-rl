@@ -111,6 +111,7 @@ class DcsPairs:
         n_frames: int = 16,
         seed: int = 0,
         label_bins: int = 2,
+        difficulty: str = "medium",
         device=None,
     ):
         if not is_available():
@@ -120,7 +121,12 @@ class DcsPairs:
         self.domain = domain
         self.task = task
         self.device = device or torch.device("cpu")
-        self.wrapper = DCSWrapper(domain, task, resolution=resolution, seed=seed)
+        self.wrapper = DCSWrapper(
+            domain, task,
+            resolution=resolution,
+            seed=seed,
+            difficulty=difficulty,
+        )
         self.n_frames = max(int(n_frames), 8)
         self.label_bins = label_bins
         self.cache = {}

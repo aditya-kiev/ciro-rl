@@ -84,10 +84,16 @@ class CURLModel(nn.Module):
         return zq @ self.W @ zk.T
 
     def update_momentum_key(self, momentum: float = 0.05) -> None:
-        """xi <- m*xi + (1-m)*theta. (CIRO App. C.2, m = 0.05.)"""
+        """xi <- (1-m)*xi + m*theta: a small EMA step toward the query encoder.
+
+        Standard MoCo/CURL semantics (CIRO App. C.2, m = 0.05): the momentum key
+        target changes *slowly*, retaining (1-m) of its own weights each update.
+        (The previous implementation had the two coefficients swapped, making the
+        key collapse to ~95% of the query encoder after a single update.)
+        """
         with torch.no_grad():
             for qp, kp in zip(self.query.parameters(), self.key.parameters()):
-                kp.data.mul_(momentum).add_(qp.data, alpha=1.0 - momentum)
+                kp.data.mul_(1.0 - momentum).add_(qp.data, alpha=momentum)
 
     @property
     def rep_dim(self) -> int:

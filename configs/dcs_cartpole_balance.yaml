@@ -6,6 +6,7 @@ domain: cartpole
 task: balance
 dcs_resolution: 64          # deliberately below DCS defaults (100x100) for T4
 dcs_frame_stack: 1
+dcs_difficulty: medium      # easy | medium | hard (DCS distractor pools)
 dcs_n_frames: 24           # frames sampled per distractor pool for DTG
 dcs_pool_action_seed: 0
 dcs_train_pool: train

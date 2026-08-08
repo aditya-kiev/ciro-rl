@@ -21,12 +21,14 @@ License note. ``distracting_control`` and ``dm_control`` are Apache-2.0. Verify
 their upstream LICENSE files before publishing this repo publicly; see README.
 """
 
-from typing import Tuple
+from typing import Optional
 
 import numpy as np
 
 RESOLUTION_DEFAULT = 64
 FRAME_STACK_DEFAULT = 1
+DIFFICULTY_DEFAULT = "medium"
+VALID_DIFFICULTIES = ("easy", "medium", "hard")
 
 
 class DCSError(RuntimeError):
@@ -54,35 +56,53 @@ def is_available() -> bool:
         return False
 
 
-def _set_pool(store, pool):
-    """Best-effort selection of the DCS distractor pool (version-dependent API)."""
-    try:
-        store.distractor_pool = pool  # many versions expose an attribute
-    except Exception:  # pragma: no cover - env-gated
-        pass
-    return store
+def _background_videos(pool: str) -> str:
+    """Map a DCS train/eval pool name to a DAVIS video split for the background."""
+    return "train" if pool == "train" else "val"
 
 
-def _build_env(domain, task, seed):
-    """Lazily build a wrapped distractor env (pool set later by reset())."""
-    import dm_control.suite as suite
-    from distracting_control.suite import DistractingControlEnv
+def _build_env(
+    domain: str,
+    task: str,
+    seed: int,
+    difficulty: str = DIFFICULTY_DEFAULT,
+    resolution: Optional[int] = RESOLUTION_DEFAULT,
+    background_dataset_videos: Optional[str] = None,
+):
+    """Build a distracting environment via ``distracting_control.suite.load``.
 
-    base = suite.load(
+    This is the crate's real public API (courtesy of google-research /
+    ``sahandrez/distracting_control``): ``suite.load`` wraps a dm_control
+    environment with background/camera/colour distractor wrappers and a pixel
+    observation wrapper. There is **no** ``DistractingControlEnv`` class to
+    construct; the previously-assumed constructor did not exist and import
+    would raise ``ImportError``, so DCS environments were never buildable.
+    ``difficulty`` selects the DCS distractor pool; ``resolution`` is threaded
+    through ``render_kwargs`` so pixels come out at the requested size; and
+    ``background_dataset_videos`` makes the DTG train/eval split a real
+    distractor change rather than a no-op re-tag.
+    """
+    if difficulty not in VALID_DIFFICULTIES:
+        raise ValueError(
+            "dcs_difficulty must be one of %s, got %r"
+            % (VALID_DIFFICULTIES, difficulty)
+        )
+    import distracting_control.suite as distractors
+
+    render_kwargs: dict = {}
+    if resolution is not None:
+        render_kwargs["height"] = int(resolution)
+        render_kwargs["width"] = int(resolution)
+
+    return distractors.load(
         domain,
         task,
+        difficulty=difficulty,
+        dynamic=False,
         task_kwargs={"time_limit": 20.0},
-        visualize_reward=False,
-        from_pixels=True,
+        render_kwargs=render_kwargs or None,
+        background_dataset_videos=background_dataset_videos,
     )
-    # NOTE: the exact DistractingControlEnv constructor signature is version-
-    # dependent and has not been smoke-tested here (no dm_control/MuJoCo in the
-    # dev environment). If the published API differs, adjust this one call.
-    pool_env = DistractingControlEnv(
-        base_env=base,
-        dynamic_distraction=False,
-    )
-    return pool_env
 
 
 class DCSWrapper:
@@ -103,28 +123,42 @@ class DCSWrapper:
         resolution: int = RESOLUTION_DEFAULT,
         frame_stack: int = FRAME_STACK_DEFAULT,
         seed: int = 0,
+        difficulty: str = DIFFICULTY_DEFAULT,
     ):
         _require_deps()
+        if difficulty not in VALID_DIFFICULTIES:
+            raise ValueError(
+                "dcs_difficulty must be one of %s, got %r"
+                % (VALID_DIFFICULTIES, difficulty)
+            )
         self.domain = domain
         self.task = task
         self.resolution = resolution
         self.frame_stack = frame_stack
         self.seed = seed
-        self._store = None
-        self._pool = None
+        self.difficulty = difficulty
+        self._env = None
+        self._env_pool = None
         self.action_dim = 1  # overwritten after env build from the action spec
 
     def _ensure(self, distractor_pool: str):
-        # Rebuild iff the pool changes (train vs eval distractor pool switch).
-        if self._store is None or self._pool != distractor_pool:
-            self._store = _build_env(self.domain, self.task, self.seed)
-            self._store = _set_pool(self._store, distractor_pool)
+        # Rebuild iff the pool changes (train vs eval distractor pool switch);
+        # the background video split is baked in at build time.
+        if self._env is None or self._env_pool != distractor_pool:
+            self._env = _build_env(
+                self.domain,
+                self.task,
+                self.seed,
+                difficulty=self.difficulty,
+                resolution=self.resolution,
+                background_dataset_videos=_background_videos(distractor_pool),
+            )
             try:
-                spec = self._store.action_spec()
+                spec = self._env.action_spec()
                 self.action_dim = spec.shape[-1]
             except Exception:  # pragma: no cover - env-gated, best-effort
                 self.action_dim = 1
-            self._pool = distractor_pool
+            self._env_pool = distractor_pool
 
     def reset(self, distractor_pool: str = "train") -> np.ndarray:
         """Reset into the given distractor pool; returns the first frame (H,W,3)."""
@@ -132,13 +166,19 @@ class DCSWrapper:
         if distractor_pool not in {"train", "eval"}:
             raise ValueError("distractor_pool must be 'train' or 'eval'")
         self._ensure(distractor_pool)
-        obs = self._store.reset()
-        return self._to_array(obs)
+        ts = self._env.reset()
+        return self._to_array(ts.observation)
 
     def step(self, action):
         """Apply `action`, return (obs, reward, terminated, info) gym-style."""
-        obs, reward, done, info = self._store.step(action)
-        return self._to_array(obs), float(reward), bool(done), info
+        ts = self._env.step(action)
+        obs = self._to_array(ts.observation)
+        reward = float(ts.reward) if ts.reward is not None else 0.0
+        terminated = bool(
+            ts.step_type == ts.step_type.LAST
+            or (ts.discount is not None and float(ts.discount) == 0.0)
+        )
+        return obs, reward, terminated, {}
 
     def _to_array(self, obs) -> np.ndarray:
         arr = np.asarray(obs, dtype=np.float32)

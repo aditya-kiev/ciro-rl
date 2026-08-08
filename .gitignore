@@ -33,3 +33,4 @@ Thumbs.db
 
 # Notebooks that are work-in-progress
 *.ipynb_checkpoints/
+outputs/matrix/records.jsonl

@@ -187,9 +187,8 @@ would plug the learned representation into their own value/policy heads.
 
 ## License
 
-**This project has NOT yet chosen a license.** See `LICENSE` — this is a
-decision intentionally left to the project owner, not decided by the code; the
-LICENSE file is a placeholder documenting that. In particular, note that the
-optional DCS dependencies (`dm_control` / `distracting_control`) have **their
-own** licenses (MuJoCo and Distracting Control are **not** available under the
-same terms) — see the "Known limitation" note above.
+This project is licensed under the **MIT License** — see `LICENSE`. In
+particular, note that the optional DCS dependencies (`dm_control` /
+`distracting_control`) have **their own** licenses (MuJoCo and Distracting
+Control are **not** available under the same terms) — see the "Known
+limitation" note above.

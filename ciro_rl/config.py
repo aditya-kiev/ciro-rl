@@ -63,6 +63,7 @@ DEFAULTS = {
     "confounded_pair": (0, 1),
     "dcs_resolution": 64,
     "dcs_n_frames": 16,
+    "dcs_difficulty": "medium",
 }
 
 

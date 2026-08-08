@@ -4,6 +4,7 @@ domain: walker
 task: walk
 dcs_resolution: 64
 dcs_frame_stack: 1
+dcs_difficulty: medium      # easy | medium | hard (DCS distractor pools)
 dcs_n_frames: 24
 dcs_pool_action_seed: 0
 dcs_train_pool: train

@@ -1,14 +1,28 @@
-# ---
-# TODO: License placeholder.
-#
-# I have NOT chosen a license yet. Please do NOT decide for me.
-#
-# Suggested starting points (you pick; this is a decision for you, not the code):
-#   - MIT / BSD-3-Clause  : permissive, research-friendly, simple.
-#   - Apache-2.0          : permissive with an explicit patent grant.
-#   - CC-BY-SA-4.0        : share-alike (often chosen for open-science artifacts).
-#
-# Until you pick, treat this repository as "all rights reserved" (no license = no
-# use rights for third parties). Replace this file with your chosen license text
-# and paste the corresponding LICENSE header into `pyproject.toml`'s `license` field
-# before publishing.
+MIT License
+
+Copyright (c) 2026 Aditya Jha
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Note: this license applies only to the code in this repository. The optional
+Distracting Control / dm_control data-generator stack is third-party software
+with its own terms (MuJoCo and Distracting Control are NOT covered by the MIT
+license above); see the "Known limitation" note in README.md.

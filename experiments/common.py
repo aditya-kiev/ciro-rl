@@ -45,6 +45,7 @@ def build_provider(cfg, device, is_dcs):
                 resolution=cfg.dcs_resolution,
                 n_frames=cfg.dcs_n_frames,
                 seed=cfg.seed,
+                difficulty=cfg.dcs_difficulty,
                 device=device,
             )
         except DCSError as e:

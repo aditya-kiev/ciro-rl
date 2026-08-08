@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "CIRO: Conditional Independence Regularization for contrastive state-representation learning in offline RL, plus the ACS and DTG diagnostics. Companion repo to the CIR paper."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "TODO: pick a license (see README)" }
+license = { text = "MIT" }
 authors = [{ name = "aditya-kiev" }]
 keywords = ["representation-learning", "contrastive-learning", "offline-rl", "causality", "hsic"]
 
